@@ -1,0 +1,399 @@
+# ============================================================================
+# AetherRecon 3.0 — Enterprise Configuration
+# ============================================================================
+# Operates as an enterprise-grade exposure assessment platform.
+# WARNING: Only scan targets you have EXPLICIT WRITTEN AUTHORIZATION to test.
+# ============================================================================
+
+general:
+  project_name: "AetherRecon Scan"
+  output_dir: "./output"
+  state_file: "./output/.aetherrecon_state.json"
+  database: "sqlite:///./output/aetherrecon.db"
+  log_level: "INFO"
+  log_file: "./output/aetherrecon.log"
+
+# --- Workspace ---
+workspace:
+  default_project: "default"
+  projects_dir: "./projects"
+  max_projects: 50
+
+# --- API Server ---
+api:
+  host: "127.0.0.1"
+  port: 8337
+  auto_start: false
+
+# --- Scope & Safety ---
+scope:
+  require_confirmation: true
+  allowed_targets: []
+  blocked_targets:
+    - "127.0.0.1"
+    - "localhost"
+    - "*.gov"
+    - "*.mil"
+    - "*.edu"
+  respect_robots_txt: true
+  max_scope_depth: 3
+
+# --- Rate Limiting ---
+rate_limiting:
+  requests_per_second: 10
+  burst_size: 20
+  backoff_factor: 1.5
+  max_retries: 3
+  timeout_seconds: 10
+  concurrent_tasks: 50
+
+# --- Scanning Profiles (Professional Mode Strategy) ---
+profiles:
+  safe:
+    description: "Passive recon only — no fuzzing, low concurrency"
+    modules: ["whois", "dns_enum", "cert_transparency", "subdomain_enum", "subfinder"]
+    threads: 5
+    rate_limit: 5
+    concurrency: 10
+    dns_concurrency: 20
+    timeout: 15
+    crawl_depth: 0
+    active_enum: false
+
+  standard:
+    description: "Moderate crawling, limited probing, tech detection"
+    modules: ["whois", "dns_enum", "cert_transparency", "subdomain_enum", "subfinder",
+              "theharvester", "wayback", "gau", "http_probe", "tls_inspect", "headers_analysis"]
+    threads: 10
+    rate_limit: 10
+    concurrency: 30
+    dns_concurrency: 50
+    timeout: 10
+    crawl_depth: 2
+    active_enum: true
+
+  advanced:
+    description: "Deep fingerprinting, targeted vulnerability checks, screenshot collection"
+    modules: ["whois", "dns_enum", "cert_transparency", "subdomain_enum", "subfinder", "amass",
+              "theharvester", "wayback", "gau", "http_probe", "port_scan", "naabu",
+              "nmap_enum", "tech_fingerprint", "whatweb", "screenshot", "eyewitness", "tls_inspect",
+              "headers_analysis", "cve_correlate", "katana", "arjun", "api_discovery",
+              "login_surface", "secrets_scanner", "misconfig_engine", "tech_specific", "nikto"]
+    threads: 25
+    rate_limit: 25
+    concurrency: 75
+    dns_concurrency: 150
+    timeout: 8
+    crawl_depth: 3
+    active_enum: true
+
+  full_audit:
+    description: "Authenticated testing, endpoint discovery, parameter analysis, technology-aware validation"
+    modules: ["all"]
+    threads: 35
+    rate_limit: 35
+    concurrency: 100
+    dns_concurrency: 200
+    timeout: 7
+    crawl_depth: 4
+    active_enum: true
+
+  # Legacy profiles for backward compatibility
+  moderate:
+    description: "Steady scanning for moderate production targets"
+    modules: ["whois", "dns_enum", "cert_transparency", "subdomain_enum", "subfinder",
+              "theharvester", "wayback", "http_probe", "port_scan", "tech_fingerprint",
+              "tls_inspect", "headers_analysis"]
+    threads: 15
+    rate_limit: 15
+    concurrency: 45
+    dns_concurrency: 100
+    timeout: 10
+    crawl_depth: 2
+    active_enum: true
+
+  high:
+    description: "Thorough active scanning with all checks"
+    modules: ["whois", "dns_enum", "cert_transparency", "subdomain_enum", "subfinder", "amass",
+              "theharvester", "wayback", "gau", "http_probe", "port_scan",
+              "tech_fingerprint", "whatweb", "screenshot", "eyewitness", "tls_inspect",
+              "headers_analysis", "cve_correlate", "feroxbuster", "wpscan", "nikto",
+              "api_discovery", "secrets_scanner", "misconfig_engine", "arjun"]
+    threads: 25
+    rate_limit: 25
+    concurrency: 75
+    dns_concurrency: 150
+    timeout: 8
+    crawl_depth: 3
+    active_enum: true
+
+  aggressive:
+    description: "Fast aggressive scanning for CTF/lab targets"
+    modules: ["all"]
+    threads: 50
+    rate_limit: 50
+    concurrency: 150
+    dns_concurrency: 300
+    timeout: 5
+    crawl_depth: 5
+    active_enum: true
+
+  extreme:
+    description: "Maximum speed, lab-only, all checks enabled"
+    modules: ["all"]
+    threads: 100
+    rate_limit: 100
+    concurrency: 300
+    dns_concurrency: 500
+    timeout: 3
+    crawl_depth: 10
+    active_enum: true
+
+# --- Target Presets ---
+target_presets:
+  wordpress:
+    extra_modules: ["tech_fingerprint", "wpscan", "tech_specific"]
+    wordlists: ["wordpress-common.txt"]
+    check_paths: ["/wp-admin", "/wp-login.php", "/wp-content", "/xmlrpc.php",
+                  "/wp-json/wp/v2/users", "/.wp-config.php.bak", "/readme.html"]
+
+  api:
+    extra_modules: ["api_discovery", "headers_analysis"]
+    check_paths: ["/api", "/v1", "/v2", "/graphql", "/swagger", "/openapi.json",
+                  "/docs", "/redoc", "/.env", "/health", "/status"]
+
+  react_vue:
+    extra_modules: ["tech_fingerprint", "secrets_scanner"]
+    check_paths: ["/static/js", "/manifest.json", "/_next", "/assets"]
+
+  cloud:
+    extra_modules: ["dns_enum", "cert_transparency", "secrets_scanner"]
+    check_paths: ["/.git", "/.env", "/.aws", "/server-status", "/.well-known"]
+
+  ctf:
+    extra_modules: ["all"]
+    check_paths: ["/robots.txt", "/flag", "/flag.txt", "/admin", "/secret",
+                  "/backup", "/.git", "/.svn", "/console", "/debug"]
+
+  jira:
+    extra_modules: ["tech_specific"]
+    check_paths: ["/rest/api/2/serverInfo", "/servicedesk/customer/user/signup",
+                  "/secure/QueryComponent!Default.jspa"]
+
+# --- Module Configuration ---
+modules:
+  port_scan:
+    top_ports: 1000
+    custom_ports: []
+    scan_type: "connect"
+    timeout: 2
+
+  http_probe:
+    follow_redirects: true
+    max_redirects: 5
+    user_agent: "AetherRecon/3.0 (Authorized Security Audit)"
+    check_ports: [80, 443, 8080, 8443, 8000, 8888]
+
+  subdomain_enum:
+    wordlist: ""
+    resolvers: ["8.8.8.8", "1.1.1.1", "9.9.9.9"]
+    concurrent_resolves: 100
+
+  tech_fingerprint:
+    max_depth: 2
+
+  nuclei:
+    templates_dir: ""
+    severity: ["critical", "high", "medium"]
+    rate_limit: 30
+
+  wpscan:
+    api_token: ""
+
+  secrets_scanner:
+    max_paths: 50
+    scan_response_bodies: true
+
+  api_discovery:
+    check_graphql: true
+    extract_from_js: true
+
+  misconfig_engine:
+    check_admin_panels: true
+    check_debug_endpoints: true
+    check_default_pages: true
+
+# --- External Tool Paths ---
+tools:
+  subfinder: ""
+  amass: ""
+  httpx: ""
+  nuclei: ""
+  naabu: ""
+  katana: ""
+  dnsx: ""
+  ffuf: ""
+  assetfinder: ""
+  gau: ""
+  waybackurls: ""
+  nikto: ""
+  whatweb: ""
+  wpscan: ""
+  feroxbuster: ""
+  theharvester: ""
+  gowitness: ""
+  cmseek: ""
+  nmap: ""
+  rustscan: ""
+  testssl: ""
+  dalfox: ""
+  sqlmap: ""
+  commix: ""
+  trufflehog: ""
+  gitleaks: ""
+  eyewitness: ""
+  paramspider: ""
+  arjun: ""
+
+# --- Wordlists ---
+wordlists:
+  directory: "./wordlists"
+  default_dns: "subdomains-top1million-5000.txt"
+  default_dirs: "raft-medium-directories.txt"
+  sources:
+    - name: "SecLists"
+      url: "https://github.com/danielmiessler/SecLists"
+    - name: "AssetNote Wordlists"
+      url: "https://github.com/assetnote/wordlists"
+
+# --- Agent Configuration ---
+agent:
+  enabled: true
+  auto_chain: true
+  max_depth: 5
+  decision_delay: 1
+  priority_rules:
+    - condition: "open_port:80,443"
+      action: "run_module:http_probe,tech_fingerprint,headers_analysis"
+    - condition: "tech:WordPress"
+      action: "run_module:wpscan,tech_specific"
+    - condition: "tech:React,Vue.js,Angular"
+      action: "run_module:api_discovery,secrets_scanner"
+    - condition: "tech:GraphQL"
+      action: "run_module:api_discovery"
+    - condition: "tech:Jira,Confluence"
+      action: "run_module:tech_specific"
+    - condition: "header:X-Powered-By"
+      action: "run_module:cve_correlate"
+    - condition: "cert:expired"
+      action: "flag:high_priority"
+  
+  # AI Prompt Context
+  priorities:
+    - "evidence-backed findings"
+    - "low false positives"
+    - "version validation"
+    - "technology-aware analysis"
+    - "adaptive crawling"
+    - "contextual risk scoring"
+    - "attack-surface relationships"
+    - "remediation quality"
+  
+  correlate:
+    - "technologies"
+    - "services"
+    - "endpoints"
+    - "APIs"
+    - "secrets"
+    - "cloud assets"
+    - "vulnerabilities"
+    - "authentication surfaces"
+  
+  avoid:
+    - "generic CVE spam"
+    - "banner-only assumptions"
+    - "duplicate findings"
+    - "noisy reports"
+    - "unsafe scanning behavior"
+
+# --- Reporting ---
+reporting:
+  formats: ["json", "html", "markdown"]
+  html_theme: "cyberpunk"
+  include_raw_output: false
+  deduplicate_findings: true
+  screenshot_capture: true
+  sections:
+    - "executive_summary"
+    - "attack_surface"
+    - "technologies"
+    - "open_services"
+    - "high_risk_findings"
+    - "evidence"
+    - "exploitability_confidence"
+    - "remediation"
+    - "false_positive_notes"
+    - "risk_heatmap"
+
+# --- Intelligence Engines ---
+engines:
+  confidence_scoring:
+    enabled: true
+    min_confidence_for_report: "low"
+  
+  false_positive_reduction:
+    enabled: true
+    wildcard_threshold: 0.8
+    require_version_for_cve: true
+  
+  risk_prioritization:
+    enabled: true
+    use_epss: true
+    use_kev: true
+  
+  asset_relationships:
+    enabled: true
+    detect_cloud: true
+    detect_waf: true
+    detect_cdn: true
+  
+  remediation:
+    enabled: true
+    include_references: true
+  
+  stability:
+    enabled: true
+    error_threshold: 5
+    latency_threshold: 5.0
+
+# --- TUI Theme ---
+tui:
+  theme: "cyberpunk"
+  themes:
+    cyberpunk:
+      primary: "#00f0ff"
+      secondary: "#ff00aa"
+      accent: "#00ff88"
+      warning: "#ffd700"
+      danger: "#ff3366"
+      bg: "#0a0e17"
+      surface: "#1a1f35"
+      border: "#2d3555"
+    matrix:
+      primary: "#00ff00"
+      secondary: "#00cc00"
+      accent: "#00ff88"
+      warning: "#ffff00"
+      danger: "#ff0000"
+      bg: "#000000"
+      surface: "#0a0a0a"
+      border: "#003300"
+    arctic:
+      primary: "#88ccff"
+      secondary: "#4488cc"
+      accent: "#aaddff"
+      warning: "#ffcc00"
+      danger: "#ff4444"
+      bg: "#0a1628"
+      surface: "#152238"
+      border: "#1e3a5f"

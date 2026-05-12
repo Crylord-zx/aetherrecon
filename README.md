@@ -1,406 +1,166 @@
-# 🚀 AetherRecon v1.0 — Autonomous Exposure Assessment Platform
+# ⚡ AetherRecon
 
-> **Ghost Protocol 2026**
-> AI-Driven Reconnaissance • Exposure Mapping • Intelligent Vulnerability Correlation • Evidence-Based Security Analysis
+**Modular Cybersecurity Reconnaissance & Assessment Framework**
 
----
-
-## 🧠 Overview
-
-**AetherRecon** is a next-generation autonomous exposure assessment and reconnaissance platform designed for modern attack surface intelligence.
-
-Unlike traditional scanners that simply dump raw results, AetherRecon correlates reconnaissance data, fingerprints technologies, validates findings, prioritizes risk, and generates professional reports automatically.
-
-It combines:
-
-* Passive Intelligence Gathering
-* Adaptive Asset Discovery
-* Technology-Aware Scanning
-* AI-Based Task Chaining
-* Verified Vulnerability Analysis
-* Exposure Context Mapping
-* Executive + Technical Reporting
+> ⚠️ **AUTHORIZED TARGETS ONLY** — This tool is designed for use against targets you have **explicit written authorization** to test. Unauthorized scanning is **illegal**.
 
 ---
 
-# ⚡ Ghost Protocol — 14 Stage Elite Pipeline
+## Features
 
-AetherRecon follows a structured intelligence pipeline:
+| Category | Capabilities |
+|---|---|
+| **Passive Recon** | WHOIS, DNS enumeration, Certificate Transparency, Subdomain discovery, Wayback URLs |
+| **Active Recon** | HTTP probing, TCP port scanning, Technology fingerprinting, TLS/SSL inspection |
+| **Vuln Assessment** | Security headers analysis, CVE correlation via NIST NVD |
+| **Integrations** | subfinder, amass, httpx, nuclei, naabu, katana, dnsx, ffuf, gau, nikto |
+| **Reporting** | JSON, interactive HTML (cyberpunk theme), Markdown |
+| **Safety** | Scope validation, blocklists, authorization prompts, audit logging |
 
-| Stage | Engine                        | Purpose                                  |
-| ----- | ----------------------------- | ---------------------------------------- |
-| 1     | Passive Intel Engine          | WHOIS, DNS, registration intelligence    |
-| 2     | Asset Correlation Engine      | Merge assets from multiple recon sources |
-| 3     | Live Infrastructure Mapper    | Validate live hosts and services         |
-| 4     | Adaptive Fingerprinting       | Detect technologies and frameworks       |
-| 5     | Endpoint Discovery AI         | Crawl endpoints and historical URLs      |
-| 6     | Tech-Specific Analysis        | Route assets to specialized modules      |
-| 7     | Verified Vulnerability Engine | Run validated templates and checks       |
-| 8     | Confidence Scoring            | Filter noise and reduce false positives  |
-| 9     | Evidence Collection           | Screenshots, headers, proof capture      |
-| 10    | Risk Prioritization           | EPSS + KEV + exposure scoring            |
-| 11    | Secrets & Leak Scanner        | Detect exposed secrets and credentials   |
-| 12    | Exposure Context Engine       | Map infrastructure relationships         |
-| 13    | Remediation Engine            | Generate technical remediation guidance  |
-| 14    | Executive Reporting           | HTML, JSON, Markdown reporting           |
+## Quick Start
 
----
+### Option 1: Kali Linux (Recommended)
 
-# 🛡️ Smart Stability & Defense Logic
-
-AetherRecon is designed for stable reconnaissance operations.
-
-### Features
-
-* Adaptive rate limiting
-* WAF detection and backoff
-* Automatic service health monitoring
-* Fragmented request distribution
-* Safe scanning profiles
-* Confidence-based escalation
-* Autonomous recovery handling
-
----
-
-# 🤖 Agentic AI Automation
-
-The internal **AgentPlanner** dynamically reacts to discoveries.
-
-### Examples
-
-* Detects GraphQL → launches API discovery
-* Detects URL parameters → triggers parameter analysis
-* Detects WordPress → launches WordPress analysis modules
-* Detects APIs → performs endpoint mapping
-* Detects evidence → escalates intelligently
-
----
-
-# 🖥️ Cyberpunk Dashboard (TUI)
-
-AetherRecon includes a professional terminal dashboard featuring:
-
-* Real-time logs
-* Live findings table
-* Severity visualization
-* Theme support
-* Multi-module monitoring
-* Interactive scan tracking
-
-### Themes
-
-* Cyberpunk
-* Matrix
-* Arctic
-
-Launch using:
-
-```powershell
-aetherrecon tui
+```bash
+git clone <repo> && cd aetherrecon
+chmod +x install.sh
+./install.sh
+source .venv/bin/activate
 ```
 
----
+### Option 2: pip
 
-# 🌐 FastAPI Backend
-
-AetherRecon includes a local REST API backend.
-
-### Features
-
-* Localhost API server
-* Programmatic control
-* External integrations
-* JSON responses
-* Remote automation support
-
-Start API server:
-
-```powershell
-aetherrecon api
-```
-
-Default:
-
-```text
-http://127.0.0.1:8337
-```
-
----
-
-# 📦 Integrated Tool Stack
-
-## Recon
-
-* Subfinder
-* Amass
-* Assetfinder
-* theHarvester
-* Gau
-* Wayback
-* DNSX
-
-## Probing
-
-* HTTPX
-* Naabu
-* Rustscan
-* Nmap
-* TestSSL
-
-## Discovery
-
-* Katana
-* Feroxbuster
-* FFUF
-* ParamSpider
-* Arjun
-
-## Analysis
-
-* WhatWeb
-* Wappalyzer
-* EyeWitness
-* Gowitness
-
-## Vulnerability Analysis
-
-* Nuclei
-* Nikto
-* SQLMap
-* Dalfox
-* Commix
-* WPScan
-* CMSeek
-* Trufflehog
-* Gitleaks
-
----
-
-# ⚙️ Installation (Windows)
-
-## 1️⃣ Open Terminal
-
-Open PowerShell or CMD and move to the project directory.
-
-```powershell
-cd h:\anticode
-```
-
----
-
-## 2️⃣ Install Python Dependencies
-
-```powershell
+```bash
 pip install -r requirements.txt
-```
-
----
-
-## 3️⃣ Install AetherRecon
-
-```powershell
 pip install -e .
 ```
 
----
+### Option 3: Docker
 
-## 4️⃣ Verify Installation
+```bash
+docker compose build
+docker compose run aetherrecon scan -t example.com -p safe --no-confirm
+```
 
-```powershell
+## Usage
+
+```bash
+# View help
 aetherrecon --help
-```
 
----
+# Safe passive-only scan
+aetherrecon scan -t example.com -p safe
 
-## 5️⃣ Run Your First Scan
+# Standard scan (passive + light active)
+aetherrecon scan -t example.com -p standard
 
-### Safe Profile (Recommended)
+# Full comprehensive scan
+aetherrecon scan -t 192.168.1.0/24 -p full
 
-```powershell
-aetherrecon scan -t google.com -p safe
-```
+# CTF/lab aggressive scan
+aetherrecon scan -t 10.10.10.1 -p ctf --no-confirm
 
----
+# Run specific modules only
+aetherrecon scan -t example.com -m whois,dns_enum,cert_transparency
 
-# 🧪 Scan Profiles
+# Resume an interrupted scan
+aetherrecon scan -t example.com -p standard --resume
 
-| Profile      | Description                           |
-| ------------ | ------------------------------------- |
-| `safe`       | Passive reconnaissance only           |
-| `standard`   | Balanced discovery and validation     |
-| `aggressive` | Deep enumeration and advanced testing |
-| `full_audit` | Complete Ghost Protocol pipeline      |
+# Custom config file
+aetherrecon scan -t example.com -c my_config.yaml
 
-View all profiles:
+# Check available external tools
+aetherrecon check-tools
 
-```powershell
+# List scanning profiles
 aetherrecon profiles
 ```
 
----
+## Scanning Profiles
 
-# 📋 Main Commands
+| Profile | Type | Modules | Rate Limit |
+|---|---|---|---|
+| `safe` | Passive only | WHOIS, DNS, CT logs, subdomains | 5 req/s |
+| `standard` | Passive + light active | + HTTP probe, TLS, headers | 10 req/s |
+| `full` | Comprehensive | All modules | 15 req/s |
+| `ctf` | Aggressive (labs only) | All modules, high concurrency | 50 req/s |
 
-| Command                     | Description                  |
-| --------------------------- | ---------------------------- |
-| `aetherrecon scan`          | Start reconnaissance scan    |
-| `aetherrecon tui`           | Launch cyberpunk dashboard   |
-| `aetherrecon check-tools`   | Check installed dependencies |
-| `aetherrecon install-tools` | Install missing tools        |
-| `aetherrecon profiles`      | Show scan profiles           |
-| `aetherrecon api`           | Start FastAPI backend        |
+## Project Structure
 
----
-
-# 🔧 Scan Options
-
-| Option            | Description             |
-| ----------------- | ----------------------- |
-| `-t`, `--target`  | Target domain or IP     |
-| `-p`, `--profile` | Scan profile            |
-| `-m`, `--modules` | Specific modules        |
-| `-o`, `--output`  | Output directory        |
-| `--resume`        | Resume interrupted scan |
-| `--no-confirm`    | Skip confirmation       |
-| `-c`, `--config`  | Custom configuration    |
-
----
-
-# 🧪 Example Commands
-
-## Standard Scan
-
-```powershell
-aetherrecon scan -t example.com
+```
+aetherrecon/
+├── config.yaml              # Configuration
+├── pyproject.toml            # Project metadata
+├── requirements.txt          # Dependencies
+├── install.sh                # Kali installer
+├── Dockerfile                # Container image
+├── docker-compose.yml        # Docker Compose
+├── src/aetherrecon/
+│   ├── cli.py                # CLI entry point
+│   ├── core/
+│   │   ├── config.py         # Config loader
+│   │   ├── database.py       # SQLite storage
+│   │   ├── scanner.py        # Scan orchestrator
+│   │   ├── scope.py          # Scope validator
+│   │   ├── state.py          # Resume state manager
+│   │   ├── rate_limiter.py   # Token-bucket rate limiter
+│   │   └── plugin_manager.py # Plugin system
+│   ├── modules/
+│   │   ├── base.py           # Base module class
+│   │   ├── passive/          # Passive recon modules
+│   │   ├── active/           # Active recon modules
+│   │   └── vuln/             # Vuln assessment modules
+│   └── reporting/
+│       ├── json_report.py    # JSON export
+│       ├── html_report.py    # Interactive HTML report
+│       └── markdown_report.py # Markdown export
+├── plugins/                  # Custom plugins
+│   └── example_plugin.py     # Plugin template
+└── tests/                    # Unit tests
 ```
 
-## Aggressive Scan
+## Writing Plugins
 
-```powershell
-aetherrecon scan -t example.com -p aggressive
+Create a `.py` file in `plugins/` with a `register()` function:
+
+```python
+from aetherrecon.modules.base import BaseModule
+
+class MyPlugin(BaseModule):
+    name = "my_plugin"
+    category = "vuln"
+
+    async def run(self, target: str) -> list[dict]:
+        # Your logic here
+        return [{"finding": "example"}]
+
+def register():
+    return {
+        "name": "my_plugin",
+        "module_class": MyPlugin,
+        "version": "1.0.0",
+    }
 ```
 
-## Specific Modules
+## Configuration
 
-```powershell
-aetherrecon scan -t example.com -m subfinder,nmap_enum,nuclei
-```
+Edit `config.yaml` to customize:
 
-## Resume Scan
+- **Scope rules** — blocklists, allowlists
+- **Rate limits** — per-profile request throttling
+- **Module settings** — ports, wordlists, resolvers
+- **External tool paths** — override auto-detection
+- **Report formats** — JSON, HTML, Markdown
 
-```powershell
-aetherrecon scan --resume
-```
+## Safety Features
 
-## Custom Output Directory
+- 🛡️ **Blocklist** — `.gov`, `.mil`, `.edu`, localhost blocked by default
+- ✅ **Authorization prompt** — requires explicit confirmation before scanning
+- 📋 **Allowlist** — optionally restrict to pre-approved targets
+- 🏠 **Private IPs** — lab/CTF ranges auto-approved
+- 📝 **Audit trail** — all actions logged to SQLite database
+- ⏱️ **Rate limiting** — adaptive token-bucket prevents target overload
 
-```powershell
-aetherrecon scan -t example.com -o reports/
-```
+## License
 
----
-
-# 📁 Report Formats
-
-AetherRecon generates:
-
-* HTML Reports
-* Markdown Reports
-* JSON Reports
-* Evidence Snapshots
-* Screenshots
-* Raw Findings
-
----
-
-# 🧠 Core Capabilities
-
-### ✔ Passive Intelligence
-
-Collects public intelligence without touching the target directly.
-
-### ✔ Attack Surface Mapping
-
-Maps domains, subdomains, APIs, technologies, and services.
-
-### ✔ Technology-Aware Scanning
-
-Automatically selects modules based on detected frameworks.
-
-### ✔ Evidence-Based Validation
-
-Captures proof before escalating findings.
-
-### ✔ Confidence Scoring
-
-Reduces false positives using verification logic.
-
-### ✔ Exposure Correlation
-
-Connects isolated findings into infrastructure context.
-
----
-
-# 📌 Recommended Environment
-
-| Requirement | Recommended          |
-| ----------- | -------------------- |
-| Python      | 3.10+                |
-| RAM         | 8GB+                 |
-| OS          | Kali Linux / Windows |
-| Disk        | SSD Preferred        |
-
----
-
-# ⚠️ Important Notice
-
-AetherRecon is intended for:
-
-* authorized security assessments
-* defensive security research
-* lab environments
-* attack surface management
-* exposure analysis
-
-Only scan systems you own or have explicit permission to assess.
-
----
-
-# 🛣️ Roadmap
-
-### Planned Features
-
-* Distributed scanning nodes
-* Kubernetes worker orchestration
-* ML-assisted anomaly detection
-* Real-time exposure monitoring
-* Cloud asset discovery
-* Multi-user dashboard
-* Plugin SDK
-* Team collaboration mode
-
----
-
-# 🧬 Philosophy
-
-> “Raw scans create noise.
-> Correlated intelligence creates visibility.”
-
-AetherRecon focuses on:
-
-* verification over volume
-* intelligence over noise
-* context over isolated findings
-
----
-
-# 📄 License
-
-MIT License
-
----
-
-# 👨‍💻 Developed By
-
-**AetherRecon Project**
-Ghost Protocol Initiative — 2026
+MIT — Use responsibly and only on authorized targets.

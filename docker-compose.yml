@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  aetherrecon:
+    build: .
+    container_name: aetherrecon
+    volumes:
+      - ./output:/app/output
+      - ./config.yaml:/app/config.yaml:ro
+      - ./plugins:/app/plugins:ro
+    network_mode: host
+    stdin_open: true
+    tty: true
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Example usage:
+    # docker compose run aetherrecon scan -t example.com -p safe --no-confirm
